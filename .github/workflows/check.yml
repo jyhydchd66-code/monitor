@@ -1,0 +1,24 @@
+name: 查岗记录
+on:
+  schedule:
+    - cron: '*/15 * * * *' # 每15分钟执行一次
+  workflow_dispatch: # 支持网页手动触发
+
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+      - name: 记录查岗时间
+        run: |
+          echo "查岗时间：$(TZ='Asia/Shanghai' date)" >> douyin_log.txt
+          echo "状态：正常" >> douyin_log.txt
+          echo "----" >> douyin_log.txt
+      - name: 提交日志更新
+        run: |
+          git config --global user.name "jyhydchd66-code"
+          git config --global user.email "test@example.com"
+          git add douyin_log.txt
+          git commit -m "自动更新日志"
+          git push
